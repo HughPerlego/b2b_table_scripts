@@ -1,0 +1,10 @@
+WITH B2B_Users AS (
+SELECT analytics_reporting.user_registrations.user_id 
+                FROM analytics_reporting.user_registrations 
+                INNER JOIN analytics_reporting.partner_organisations ON analytics_reporting.partner_organisations.organisation_id = analytics_reporting.user_registrations.organisation_id
+                LEFT JOIN analytics_reporting.user_group_codes ON analytics_reporting.user_group_codes.user_id = analytics_reporting.user_registrations.user_id)
+
+SELECT user_id, session_id, environment_name, event_name, record_date, workspace_id, 
+       book_id as workspace_book_id, location
+FROM analytics_reporting.user_workspace_event
+WHERE user_id IN (SELECT user_id FROM B2B_Users)
