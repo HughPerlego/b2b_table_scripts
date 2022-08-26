@@ -1,0 +1,13 @@
+WITH B2B_users AS (
+SELECT analytics_reporting.user_registrations.user_id
+FROM analytics_reporting.user_registrations 
+INNER JOIN analytics_reporting.partner_organisations ON analytics_reporting.partner_organisations.organisation_id = analytics_reporting.user_registrations.organisation_id
+LEFT JOIN analytics_reporting.user_group_codes ON analytics_reporting.user_group_codes.user_id = analytics_reporting.user_registrations.user_id)
+
+SELECT DATE_TRUNC('day', created_timestamp) AS date_created, user_id, 
+       book_id, book_title, publisher_name, subject_name, page_number 
+FROM analytics_reporting.book_highlights 
+WHERE user_id IN (SELECT user_id from B2B_users)
+AND length(highlighted_text) > 20
+GROUP BY DATE_TRUNC('day', created_timestamp), user_id, 
+         book_id, book_title, publisher_name, subject_name, page_number
