@@ -1,0 +1,12 @@
+WITH B2B_users AS (
+SELECT analytics_reporting.user_registrations.user_id
+FROM analytics_reporting.user_registrations 
+INNER JOIN analytics_reporting.partner_organisations ON analytics_reporting.partner_organisations.organisation_id = analytics_reporting.user_registrations.organisation_id
+LEFT JOIN analytics_reporting.user_group_codes ON analytics_reporting.user_group_codes.user_id = analytics_reporting.user_registrations.user_id)
+
+/* Filter text */
+SELECT user_id, reporting_layer.view_read_records_monthly.book_id, percentage_read, period_start, period_end
+last_updated
+FROM reporting_layer.view_read_records_monthly
+LEFT JOIN analytics_reporting.books ON analytics_reporting.books.book_id = reporting_layer.view_read_records_monthly.book_id
+WHERE user_id IN (SELECT user_id from B2B_users)
