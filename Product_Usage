@@ -1,0 +1,13 @@
+WITH B2B_users AS (
+SELECT analytics_reporting.user_registrations.user_id
+FROM analytics_reporting.user_registrations 
+INNER JOIN analytics_reporting.partner_organisations ON analytics_reporting.partner_organisations.organisation_id = analytics_reporting.user_registrations.organisation_id
+LEFT JOIN analytics_reporting.user_group_codes ON analytics_reporting.user_group_codes.user_id = analytics_reporting.user_registrations.user_id )
+
+SELECT user_id, event_timestamp, event_name, book_id,
+CASE WHEN reference_style IS NULL AND event_name = 'book reference copied' THEN 'Unknown'
+		 WHEN reference_style IS NOT NULL AND event_name = 'book reference copied' THEN reference_style
+ ELSE NULL END AS reference_style 
+FROM analytics_reporting.user_tracking_events 
+WHERE user_id IN (SELECT user_id from B2B_users)
+AND event_name IN ('bookmark creation', 'book reference copied', 'font size change', 'change font size', 'book reference copied', 'copy')
