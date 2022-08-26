@@ -1,0 +1,28 @@
+/* Query used to determine app usage breakdown on a monthly basis - adapted from metabase query as users table will act as the organsiation filter   */
+
+WITH B2B_users AS (
+SELECT analytics_reporting.user_registrations.user_id
+FROM analytics_reporting.user_registrations 
+INNER JOIN analytics_reporting.partner_organisations ON analytics_reporting.partner_organisations.organisation_id = analytics_reporting.user_registrations.organisation_id
+LEFT JOIN analytics_reporting.user_group_codes ON analytics_reporting.user_group_codes.user_id = analytics_reporting.user_registrations.user_id),
+
+Cut_Down_tracking AS (
+SELECT user_id, event_timestamp, environment_name
+FROM analytics_reporting.user_tracking_events
+WHERE environment_name IN ('Web Application', 'Mobile App')
+AND user_id IN (SELECT user_id FROM B2B_users)
+AND event_timestamp >= CAST('2020-01-01' AS DATE)
+),
+
+Track_Events AS (
+SELECT user_id, 
+       DATE_TRUNC('month', event_timestamp) AS Date_Group,
+       SUM(CASE WHEN environment_name = 'Web Application' THEN 1 ELSE 0 END) AS Web_Event,
+       SUM(CASE WHEN environment_name = 'Mobile App' THEN 1 ELSE 0 END) AS App_Event
+FROM Cut_Down_tracking
+GROUP BY user_id, DATE_TRUNC('month', event_timestamp))
+
+SELECT *, CASE WHEN Web_Event > 0 AND App_Event = 0 THEN 'Web Only'
+               WHEN Web_Event > 0 AND App_Event > 0 THEN 'Web & App'
+               WHEN Web_Event = 0 AND App_Event > 0 THEN 'App Only' ELSE NULL END AS Group_User
+FROM Track_Events
