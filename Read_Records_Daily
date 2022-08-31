@@ -13,5 +13,5 @@ FROM analytics_reporting.reading_activity_daily
 LEFT JOIN reporting_layer.view_books ON reporting_layer.view_books.book_id = analytics_reporting.reading_activity_daily.book_id
 WHERE user_id IN (SELECT user_id FROM B2B_users))
 
-SELECT *
+SELECT *, CASE WHEN DLP > 1000 THEN 1000 ELSE DLP END AS DLP_Capped
 FROM Book_Price_Results
