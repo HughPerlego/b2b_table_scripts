@@ -5,7 +5,10 @@ INNER JOIN analytics_reporting.partner_organisations ON analytics_reporting.part
 LEFT JOIN analytics_reporting.user_group_codes ON analytics_reporting.user_group_codes.user_id = analytics_reporting.user_registrations.user_id),
 
 Book_Price_Results AS (
-SELECT analytics_reporting.reading_activity_daily.* 
+SELECT analytics_reporting.reading_activity_daily.*, 
+       CASE WHEN gbp_price_exvat > 0 THEN gbp_price_exvat 
+            WHEN gbp_price_exvat = 0 AND usd_price_exvat > 0 THEN (usd_price_exvat * 0.83) 
+            WHEN gbp_price_exvat = 0 AND usd_price_exvat = 0 THEN (eur_price_exvat * 0.85) END AS DLP 
 FROM analytics_reporting.reading_activity_daily
 LEFT JOIN reporting_layer.view_books ON reporting_layer.view_books.book_id = analytics_reporting.reading_activity_daily.book_id
 WHERE user_id IN (SELECT user_id FROM B2B_users))
