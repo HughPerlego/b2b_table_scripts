@@ -13,3 +13,4 @@ SELECT ur.user_id,
 FROM analytics_reporting.user_registrations AS ur
 INNER JOIN analytics_reporting.partner_organisations AS o ON o.organisation_id = ur.organisation_id
 LEFT JOIN analytics_reporting.user_group_codes AS ug ON ug.user_id = ur.user_id
+```
