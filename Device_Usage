@@ -26,3 +26,4 @@ SELECT *, CASE WHEN Web_Event > 0 AND App_Event = 0 THEN 'Web Only'
                WHEN Web_Event > 0 AND App_Event > 0 THEN 'Web & App'
                WHEN Web_Event = 0 AND App_Event > 0 THEN 'App Only' ELSE NULL END AS Group_User
 FROM Track_Events
+
