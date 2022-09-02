@@ -5,6 +5,6 @@ INNER JOIN analytics_reporting.partner_organisations ON analytics_reporting.part
 LEFT JOIN analytics_reporting.user_group_codes ON analytics_reporting.user_group_codes.user_id = analytics_reporting.user_registrations.user_id )
 
 SELECT user_id, book_id, book_title, publisher_name, subject_name, primary_topic, annotation_id, 
-       annotation, 
+       annotation
 FROM analytics_reporting.book_annotations 
 WHERE user_id IN (SELECT user_id from B2B_users)
