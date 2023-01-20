@@ -1,6 +1,6 @@
 /* Collect all b2B user information - this table will be the main base table in Poer BI- so also include all partner orgnisations and user group code information as well  */
 
-SELECT ur.user_id, 
+SELECT user_id, 
        user_type, 
        currently_subscribed, 
        currently_trialing, 
@@ -8,9 +8,6 @@ SELECT ur.user_id,
        user_persona, 
        study_level, 
        year_of_graduation, 
-       o.*, 
-       ug.*
-FROM analytics_reporting.user_registrations AS ur
-INNER JOIN analytics_reporting.partner_organisations AS o ON o.organisation_id = ur.organisation_id
-LEFT JOIN analytics_reporting.user_group_codes AS ug ON ug.user_id = ur.user_id
+       organisation_id
+FROM analytics_reporting.user_registrations
 ```
