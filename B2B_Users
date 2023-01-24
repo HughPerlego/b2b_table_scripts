@@ -10,4 +10,5 @@ SELECT user_id,
        year_of_graduation, 
        organisation_id
 FROM analytics_reporting.user_registrations
+WHERE organisation_id is not null
 ```
